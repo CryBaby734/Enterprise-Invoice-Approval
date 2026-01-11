@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: enterprise-invoice-approval
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/expense_tracker
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate  # ВАЖНО: Никакого update или create! Только проверка.
+    properties:
+      hibernate:
+        format_sql: true  # Чтобы видеть красивые запросы в логах
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+# Кастомные настройки для MinIO (мы создадим класс ConfigProps для них позже)
+application:
+  minio:
+    url: http://localhost:9000
+    access-key: minioadmin
+    secret-key: minioadmin
+    bucket: invoices
