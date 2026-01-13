@@ -1,6 +1,5 @@
 package org.example.enterpriseinvoiceapproval.common;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.enterpriseinvoiceapproval.Identity.UserEntity;
@@ -17,6 +16,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@org.springframework.context.annotation.Profile("!test")
 public class DataSeeder implements CommandLineRunner {
 
     private final UserRepository userRepository;
@@ -41,7 +41,7 @@ public class DataSeeder implements CommandLineRunner {
                 .role(Role.MANAGER)
                 .active(true)
                 .build();
-        
+
         userRepository.save(manager);
         log.info("Saved User: {}", manager.getId());
 
@@ -58,7 +58,7 @@ public class DataSeeder implements CommandLineRunner {
 
         invoiceRepository.save(invoice);
         log.info("Saved Invoice: {}", invoice.getId());
-        
+
         log.info("Data seeding completed successfully!");
     }
 }
