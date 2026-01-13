@@ -7,6 +7,8 @@ import org.example.enterpriseinvoiceapproval.modules.workflow.dto.DecisionReques
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,9 +27,12 @@ public class InvoiceController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("vendorName") String vendorName,
             @RequestParam("amount") BigDecimal amount,
-            @RequestParam("userId") UUID userId
+            @AuthenticationPrincipal Jwt jwt
     ){
-        InvoiceEntity invoice = invoiceService.createInvoice(file, vendorName, amount, userId);
+        String email = jwt.getClaimAsString("email");
+        String fullName = jwt.getClaimAsString("name");
+
+        InvoiceEntity invoice = invoiceService.createInvoice(file, vendorName, amount, email, fullName);
         return ResponseEntity.status(HttpStatus.CREATED).body(invoice);
     }
 

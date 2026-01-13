@@ -1,12 +1,15 @@
 package org.example.enterpriseinvoiceapproval.modules.workflow;
 
 import lombok.RequiredArgsConstructor;
+import org.example.enterpriseinvoiceapproval.Identity.UserEntity;
 import org.example.enterpriseinvoiceapproval.common.InvoiceStatus;
+import org.example.enterpriseinvoiceapproval.common.Role;
 import org.example.enterpriseinvoiceapproval.modules.storage.StorageService;
 import org.example.enterpriseinvoiceapproval.modules.workflow.dto.DecisionRequest;
 import org.example.enterpriseinvoiceapproval.modules.workflow.events.InvoiceStatusChangedEvent;
 import org.example.enterpriseinvoiceapproval.modules.workflow.rules.ApprovalRule;
 import org.example.enterpriseinvoiceapproval.repository.InvoiceRepository;
+import org.example.enterpriseinvoiceapproval.repository.UserRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,16 +26,29 @@ public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final StorageService storageService;
     private final List<ApprovalRule> approvalRules;
+    private final UserRepository userRepository;
 
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public InvoiceEntity createInvoice(MultipartFile file, String vendorName, BigDecimal amount, UUID userId) {
+    public InvoiceEntity createInvoice(MultipartFile file, String vendorName, BigDecimal amount,String userEmail, String userFullName) {
+
+        UserEntity user = userRepository.findByEmail(userEmail)
+                .orElseGet(()-> {
+                    UserEntity newUser = UserEntity.builder()
+                            .email(userEmail)
+                            .fullName(userFullName)
+                            .role(Role.EMPLOYEE)
+                            .active(true)
+                            .build();
+                            return userRepository.save(newUser);
+                });
+
 
         String s3Key = storageService.uploadFile(file);
 
         InvoiceEntity invoice = InvoiceEntity.builder()
-                .userId(userId)
+                .userId(user.getId())
                 .vendorName(vendorName)
                 .amount(amount)
                 .s3FileKey(s3Key)
