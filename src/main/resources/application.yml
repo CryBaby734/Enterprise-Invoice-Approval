@@ -21,6 +21,12 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/ledgerflow
+
 # Кастомные настройки для MinIO (мы создадим класс ConfigProps для них позже)
 application:
   minio:
@@ -28,3 +34,4 @@ application:
     access-key: minioadmin
     secret-key: minioadmin
     bucket: invoices
+    

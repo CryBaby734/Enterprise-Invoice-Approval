@@ -38,6 +38,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation' // Для @NotNull, @Size
     implementation 'org.springframework.boot:spring-boot-starter-actuator' // Для метрик и healthcheck (важно для Enterprise)
 
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
     // --- ARCHITECTURE (Modular Monolith) ---
     implementation platform("org.springframework.modulith:spring-modulith-bom:${springModulithVersion}")
     implementation 'org.springframework.modulith:spring-modulith-starter-core'
@@ -70,7 +72,7 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.springframework.modulith:spring-modulith-starter-test' // Тесты модульности
-
+    testImplementation 'org.awaitility:awaitility'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
